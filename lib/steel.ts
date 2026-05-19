@@ -1,11 +1,11 @@
-import Steel from 'steel-sdk';
-import { chromium } from 'playwright-core';
-
-const client = new Steel({ steelAPIKey: process.env.STEEL_API_KEY! });
-
 export async function withSteelSession<T>(
   fn: (page: import('playwright-core').Page) => Promise<T>
 ): Promise<T> {
+  // Lazy imports — avoid module-level initialization that crashes on Vercel cold starts
+  const Steel = (await import('steel-sdk')).default;
+  const { chromium } = await import('playwright-core');
+
+  const client = new Steel({ steelAPIKey: process.env.STEEL_API_KEY! });
   const session = await client.sessions.create();
 
   const browser = await chromium.connectOverCDP(
