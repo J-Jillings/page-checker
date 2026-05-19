@@ -10,6 +10,13 @@ const nextConfig: NextConfig = {
     'pixelmatch',
     'pngjs',
   ],
+  // Force-include files that the nft tracer misses
+  outputFileTracingIncludes: {
+    '/api/check': [
+      './node_modules/playwright-core/browsers.json',
+      './node_modules/playwright-core/lib/**/*',
+    ],
+  },
 };
 
 export default nextConfig;
