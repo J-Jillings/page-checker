@@ -1,65 +1,97 @@
-import Image from "next/image";
+'use client';
+
+import { useState } from 'react';
+import { ThemeToggle } from '@/components/ThemeToggle';
+import { CheckForm } from '@/components/CheckForm';
+import { ProgressPanel } from '@/components/ProgressPanel';
+import { ResultsPanel } from '@/components/ResultsPanel';
+import type { CheckResults } from '@/lib/types';
+
+type AppState = 'idle' | 'running' | 'results';
+type Mode = 'health' | 'compare';
 
 export default function Home() {
+  const [appState, setAppState] = useState<AppState>('idle');
+  const [mode, setMode] = useState<Mode>('health');
+  const [results, setResults] = useState<CheckResults | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  async function runCheck(urlA: string, urlB?: string) {
+    setError(null);
+    setAppState('running');
+
+    try {
+      const res = await fetch('/api/check', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ urlA, urlB }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok || !data.success) throw new Error(data.error ?? 'Check failed');
+
+      setResults(data.results);
+      setAppState('results');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Something went wrong';
+      setError(msg);
+      setAppState('idle');
+    }
+  }
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div style={{ minHeight: '100vh', background: 'var(--bg)' }}>
+      <div style={{ position: 'fixed', top: 16, right: 16, zIndex: 1000 }}>
+        <ThemeToggle />
+      </div>
+
+      {appState === 'idle' && (
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', padding: '24px' }}>
+          <div style={{ width: '100%', maxWidth: '560px' }}>
+            <div style={{
+              background: 'linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #0f172a 100%)',
+              border: '1px solid var(--border)',
+              borderRadius: '16px 16px 0 0',
+              padding: '36px 36px 28px',
+              position: 'relative',
+              overflow: 'hidden',
+            }}>
+              <div style={{
+                position: 'absolute', inset: 0,
+                background: 'radial-gradient(ellipse at 70% 50%, rgba(56,189,248,0.1) 0%, transparent 70%)',
+              }} />
+              <div style={{ position: 'relative' }}>
+                <div style={{ fontSize: '10px', letterSpacing: '3px', textTransform: 'uppercase', color: 'var(--accent)', marginBottom: '8px' }}>
+                  QA before it ships
+                </div>
+                <h1 style={{ fontFamily: 'var(--font-head)', fontSize: '36px', fontWeight: 800, color: '#fff', letterSpacing: '-0.5px', margin: 0 }}>
+                  Page Checker
+                </h1>
+              </div>
+            </div>
+
+            <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderTop: 'none', borderRadius: '0 0 16px 16px', padding: '28px 36px 32px' }}>
+              {error && (
+                <div style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', borderRadius: '8px', padding: '12px 16px', color: 'var(--red)', fontSize: '13px', marginBottom: '20px' }}>
+                  {error}
+                </div>
+              )}
+              <CheckForm mode={mode} onModeChange={setMode} onSubmit={runCheck} />
+            </div>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      )}
+
+      {appState === 'running' && (
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', padding: '24px' }}>
+          <ProgressPanel mode={mode} />
         </div>
-      </main>
+      )}
+
+      {appState === 'results' && results && (
+        <ResultsPanel results={results} onNewCheck={() => { setResults(null); setAppState('idle'); }} />
+      )}
     </div>
   );
 }
