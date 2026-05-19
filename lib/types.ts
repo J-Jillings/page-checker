@@ -1,5 +1,5 @@
 export interface Issue {
-  type: 'zero-size' | 'overflow' | 'img-no-dimensions' | 'img-collapsed' | 'overlap';
+  type: 'zero-size' | 'overflow' | 'img-no-dimensions' | 'img-collapsed' | 'img-broken' | 'overlap';
   severity: 'error' | 'warning' | 'info';
   element: string;
   detail: string;

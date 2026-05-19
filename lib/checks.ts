@@ -117,22 +117,36 @@ export async function analyseLayout(page: Page, url: string): Promise<LayoutResu
           });
         }
 
-        // Images without dimensions
+        // Images — capture src/alt for actionable error messages
         if (tag === 'img') {
+          const imgEl = el as HTMLImageElement;
+          const src = imgEl.currentSrc || imgEl.src || el.getAttribute('src') || '';
+          const alt = imgEl.alt || el.getAttribute('alt') || '';
+          const srcLabel = src ? ` — src: ${src.length > 80 ? src.slice(0, 80) + '…' : src}` : '';
+          const altLabel = alt ? ` (alt: "${alt}")` : '';
+
           if (!el.getAttribute('width') && !el.getAttribute('height')) {
             issues.push({
               type: 'img-no-dimensions',
               severity: 'info',
               element: label,
-              detail: 'Image has no explicit width/height attributes (can cause layout shift)',
+              detail: `No explicit width/height attributes (can cause layout shift)${srcLabel}${altLabel}`,
             });
           }
-          if ((el as HTMLImageElement).naturalWidth > 0 && rect.width === 0) {
+          if (imgEl.naturalWidth > 0 && rect.width === 0) {
             issues.push({
               type: 'img-collapsed',
               severity: 'error',
               element: label,
-              detail: 'Image loaded but renders at zero width',
+              detail: `Image loaded but renders at zero width${srcLabel}${altLabel}`,
+            });
+          }
+          if (imgEl.complete && imgEl.naturalWidth === 0 && src) {
+            issues.push({
+              type: 'img-broken',
+              severity: 'error',
+              element: label,
+              detail: `Image failed to load${srcLabel}${altLabel}`,
             });
           }
         }
