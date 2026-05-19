@@ -67,7 +67,7 @@ export async function POST(req: NextRequest) {
 
       const diffs: Record<string, PixelDiff> = {};
       for (const bp of BREAKPOINTS) {
-        diffs[bp.name] = diffImages(dataA.screenshots[bp.name], dataB.screenshots[bp.name]);
+        diffs[bp.name] = await diffImages(dataA.screenshots[bp.name], dataB.screenshots[bp.name]);
       }
 
       const layoutDiffs = diffLayouts(dataA.layout, dataB.layout);

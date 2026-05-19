@@ -1,8 +1,10 @@
-import { PNG } from 'pngjs';
-import pixelmatch from 'pixelmatch';
 import type { PixelDiff } from './types';
 
-export function diffImages(base64A: string, base64B: string): PixelDiff {
+export async function diffImages(base64A: string, base64B: string): Promise<PixelDiff> {
+  // Dynamic imports required — pixelmatch is ESM-only and pngjs needs runtime loading
+  const { PNG } = await import('pngjs');
+  const { default: pixelmatch } = await import('pixelmatch');
+
   const bufA = Buffer.from(base64A.replace(/^data:image\/png;base64,/, ''), 'base64');
   const bufB = Buffer.from(base64B.replace(/^data:image\/png;base64,/, ''), 'base64');
 
