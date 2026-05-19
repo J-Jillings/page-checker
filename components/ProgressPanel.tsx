@@ -46,14 +46,15 @@ export function ProgressPanel({ mode }: Props) {
         border: '1px solid var(--border)',
         borderRadius: '16px',
         overflow: 'hidden',
+        boxShadow: 'var(--glow-panel)',
       }}>
         {/* Header */}
         <div style={{
-          background: 'linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #0f172a 100%)',
+          background: 'linear-gradient(135deg, #070c1a 0%, #160824 50%, #070c1a 100%)',
           padding: '24px 28px',
           borderBottom: '1px solid var(--border)',
         }}>
-          <div style={{ fontFamily: 'var(--font-head)', fontSize: '20px', fontWeight: 700, color: '#fff' }}>
+          <div style={{ fontFamily: 'var(--font-head)', fontSize: '20px', fontWeight: 700, background: 'linear-gradient(135deg, #ff00aa, #00ffd5)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
             Running {mode === 'health' ? 'Health Check' : 'Comparison'}
           </div>
           <div style={{ color: 'var(--muted)', fontSize: '12px', marginTop: '4px' }}>This may take 60–120 seconds</div>

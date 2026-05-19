@@ -5,6 +5,13 @@ export interface Issue {
   detail: string;
 }
 
+export interface ConsoleError {
+  text: string;
+  url?: string;
+  line?: number;
+  column?: number;
+}
+
 export interface ElementData {
   label: string;
   top: number;
@@ -39,6 +46,14 @@ export interface LayoutDiff {
   yDiff: number;
 }
 
+export interface PSIAudit {
+  id: string;
+  title: string;
+  description: string;
+  displayValue?: string;
+  score: number | null;
+}
+
 export interface PSIResult {
   scores: {
     performance: number;
@@ -53,6 +68,8 @@ export interface PSIResult {
     fcp: string;
     si: string;
   };
+  opportunities: PSIAudit[];
+  diagnostics: PSIAudit[];
 }
 
 export interface LinkResult {
@@ -73,7 +90,7 @@ export interface HealthCheckResults {
   timestamp: string;
   screenshots: Record<string, string>;
   layout: LayoutResult;
-  consoleErrors: string[];
+  consoleErrors: ConsoleError[];
   links: LinkResult[];
   psi: PSIResult | null;
 }
@@ -93,7 +110,7 @@ export interface CompareCheckResults {
     b: LayoutResult;
     diffs: Record<string, LayoutDiff[]>;
   };
-  consoleErrors: { a: string[]; b: string[] };
+  consoleErrors: { a: ConsoleError[]; b: ConsoleError[] };
   links: { a: LinkResult[]; b: LinkResult[] };
   psi: { a: PSIResult | null; b: PSIResult | null };
 }

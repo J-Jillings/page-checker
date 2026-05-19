@@ -48,7 +48,7 @@ export function ResultsPanel({ results, onNewCheck }: Props) {
     <div>
       {/* Results header */}
       <div style={{
-        background: 'linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #0f172a 100%)',
+        background: 'linear-gradient(135deg, #070c1a 0%, #160824 50%, #070c1a 100%)',
         borderBottom: '1px solid var(--border)',
         padding: '28px 40px',
         display: 'flex',
@@ -56,9 +56,10 @@ export function ResultsPanel({ results, onNewCheck }: Props) {
         justifyContent: 'space-between',
         flexWrap: 'wrap',
         gap: '16px',
+        boxShadow: '0 2px 40px rgba(255,0,170,0.12)',
       }}>
         <div>
-          <div style={{ fontFamily: 'var(--font-head)', fontSize: '24px', fontWeight: 800, color: '#fff' }}>
+          <div style={{ fontFamily: 'var(--font-head)', fontSize: '24px', fontWeight: 800, background: 'linear-gradient(135deg, #ff00aa, #00ffd5)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
             {results.mode === 'health' ? 'Health Check Results' : 'Comparison Results'}
           </div>
           <div style={{ fontSize: '11px', color: 'var(--muted)', marginTop: '4px' }}>
@@ -81,6 +82,7 @@ export function ResultsPanel({ results, onNewCheck }: Props) {
               fontFamily: 'var(--font-mono)',
               cursor: 'pointer',
               letterSpacing: '0.5px',
+              boxShadow: 'var(--glow-accent)',
             }}
           >
             Download Report
@@ -89,15 +91,16 @@ export function ResultsPanel({ results, onNewCheck }: Props) {
             onClick={onNewCheck}
             style={{
               padding: '8px 18px',
-              background: 'var(--accent)',
-              border: '1px solid var(--accent)',
+              background: 'linear-gradient(135deg, #ff00aa, #cc0088)',
+              border: '1px solid #ff00aa',
               borderRadius: '8px',
-              color: '#000',
+              color: '#fff',
               fontSize: '12px',
               fontFamily: 'var(--font-mono)',
               fontWeight: 700,
               cursor: 'pointer',
               letterSpacing: '0.5px',
+              boxShadow: 'var(--glow-accent)',
             }}
           >
             New Check

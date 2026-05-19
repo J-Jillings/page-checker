@@ -49,10 +49,11 @@ export function CheckForm({ mode, onModeChange, onSubmit }: Props) {
           onClick={() => onModeChange('health')}
           style={{
             ...pillBase,
-            background: mode === 'health' ? 'var(--accent)' : 'transparent',
-            color: mode === 'health' ? '#000' : 'var(--muted)',
+            background: mode === 'health' ? 'rgba(255,0,170,0.15)' : 'transparent',
+            color: mode === 'health' ? 'var(--accent)' : 'var(--muted)',
             borderColor: mode === 'health' ? 'var(--accent)' : 'var(--border)',
             fontWeight: mode === 'health' ? 700 : 400,
+            boxShadow: mode === 'health' ? 'var(--glow-accent)' : 'none',
           }}
         >
           Health Check
@@ -62,10 +63,11 @@ export function CheckForm({ mode, onModeChange, onSubmit }: Props) {
           onClick={() => onModeChange('compare')}
           style={{
             ...pillBase,
-            background: mode === 'compare' ? 'var(--accent2)' : 'transparent',
-            color: mode === 'compare' ? '#fff' : 'var(--muted)',
+            background: mode === 'compare' ? 'rgba(0,255,213,0.15)' : 'transparent',
+            color: mode === 'compare' ? 'var(--accent2)' : 'var(--muted)',
             borderColor: mode === 'compare' ? 'var(--accent2)' : 'var(--border)',
             fontWeight: mode === 'compare' ? 700 : 400,
+            boxShadow: mode === 'compare' ? 'var(--glow-teal)' : 'none',
           }}
         >
           Comparison
@@ -109,19 +111,20 @@ export function CheckForm({ mode, onModeChange, onSubmit }: Props) {
         style={{
           width: '100%',
           padding: '12px',
-          background: 'var(--accent)',
-          border: 'none',
+          background: 'linear-gradient(135deg, #ff00aa, #cc0088)',
+          border: '1px solid #ff00aa',
           borderRadius: '8px',
-          color: '#000',
+          color: '#fff',
           fontSize: '13px',
           fontWeight: 700,
           fontFamily: 'var(--font-mono)',
           cursor: 'pointer',
-          letterSpacing: '1px',
-          transition: 'opacity 0.15s',
+          letterSpacing: '1.5px',
+          transition: 'opacity 0.15s, box-shadow 0.15s',
+          boxShadow: '0 0 12px rgba(255,0,170,0.4)',
         }}
-        onMouseEnter={e => (e.currentTarget.style.opacity = '0.85')}
-        onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
+        onMouseEnter={e => { e.currentTarget.style.opacity = '0.9'; e.currentTarget.style.boxShadow = '0 0 20px rgba(255,0,170,0.65)'; }}
+        onMouseLeave={e => { e.currentTarget.style.opacity = '1';   e.currentTarget.style.boxShadow = '0 0 12px rgba(255,0,170,0.4)'; }}
       >
         RUN CHECK
       </button>

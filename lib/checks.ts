@@ -1,5 +1,5 @@
 import type { Page } from 'playwright-core';
-import type { LayoutResult, LinkResult } from './types';
+import type { LayoutResult, LinkResult, ConsoleError } from './types';
 
 export const BREAKPOINTS = [
   { name: 'Mobile',  width: 375,  height: 812  },
@@ -187,10 +187,20 @@ export async function analyseLayout(page: Page, url: string): Promise<LayoutResu
   return results as LayoutResult;
 }
 
-export async function collectConsoleErrors(page: Page, url: string): Promise<string[]> {
-  const errors: string[] = [];
-  page.on('console', msg => { if (msg.type() === 'error') errors.push(msg.text()); });
-  page.on('pageerror', err => errors.push(err.message));
+export async function collectConsoleErrors(page: Page, url: string): Promise<ConsoleError[]> {
+  const errors: ConsoleError[] = [];
+  page.on('console', msg => {
+    if (msg.type() === 'error') {
+      const loc = msg.location();
+      errors.push({
+        text: msg.text(),
+        url: loc.url || undefined,
+        line: loc.lineNumber != null ? loc.lineNumber : undefined,
+        column: loc.columnNumber != null ? loc.columnNumber : undefined,
+      });
+    }
+  });
+  page.on('pageerror', err => errors.push({ text: err.message }));
   await page.goto(url, { waitUntil: 'networkidle', timeout: 30000 });
   await page.waitForTimeout(2000);
   return errors;

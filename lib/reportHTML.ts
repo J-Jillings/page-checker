@@ -128,7 +128,7 @@ function generateSoloReport(results: import('./types').HealthCheckResults, now: 
 
   const consoleSection = results.consoleErrors.length === 0
     ? '<div class="panel-card"><div class="panel-card-header">Console</div><div class="panel-card-body all-good">✓ No console errors</div></div>'
-    : `<div class="panel-card"><div class="panel-card-header">Console Errors (${results.consoleErrors.length})</div><div class="panel-card-body"><ul class="err-list">${results.consoleErrors.map(e => `<li>${e}</li>`).join('')}</ul></div></div>`;
+    : `<div class="panel-card"><div class="panel-card-header">Console Errors (${results.consoleErrors.length})</div><div class="panel-card-body"><ul class="err-list">${results.consoleErrors.map(e => `<li>${e.text}${e.url ? ` <span style="opacity:0.6;font-size:10px">${e.url}${e.line != null ? ':' + e.line : ''}</span>` : ''}</li>`).join('')}</ul></div></div>`;
 
   const linksSection = broken === 0
     ? '<div class="panel-card"><div class="panel-card-header">Links</div><div class="panel-card-body all-good">✓ No broken links</div></div>'
@@ -226,8 +226,8 @@ ${psiScoreRow('performance','Performance')}${psiScoreRow('accessibility','Access
 </tbody></table></div>
 </div>` : '<p style="color:var(--muted)">PageSpeed Insights data unavailable.</p>';
 
-  function consoleCol(errors: string[], label: string) {
-    return `<div class="panel-card"><div class="panel-card-header">${label} (${errors.length} error${errors.length !== 1 ? 's' : ''})</div><div class="panel-card-body">${errors.length === 0 ? '<div style="color:var(--green)">✓ No console errors</div>' : `<ul class="err-list">${errors.map(e => `<li>${e}</li>`).join('')}</ul>`}</div></div>`;
+  function consoleCol(errors: import('./types').ConsoleError[], label: string) {
+    return `<div class="panel-card"><div class="panel-card-header">${label} (${errors.length} error${errors.length !== 1 ? 's' : ''})</div><div class="panel-card-body">${errors.length === 0 ? '<div style="color:var(--green)">✓ No console errors</div>' : `<ul class="err-list">${errors.map(e => `<li>${e.text}${e.url ? ` <span style="opacity:0.6;font-size:10px">${e.url}${e.line != null ? ':' + e.line : ''}</span>` : ''}</li>`).join('')}</ul>`}</div></div>`;
   }
 
   function linksCol(links: LinkResult[], label: string) {
